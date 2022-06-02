@@ -11,7 +11,7 @@ The following functions in CRAN packages are considered:
     "gensa", "ga", "genoud",                      # Genetic Algorithms
     "pso", "psopt", "hydropso",                   # Particle Swarm Optimization
     "direct", "crs2lm", "isres", "stogo",         # Stochastic optimizeres in 'NLoptr'
-    "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # CMA-ES -like procedures
+    "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # CMA-ES, Evolution Strategy
     "malschains", "ceimopt",                      # CE
     "smco", "soma")                               # --others--
 
@@ -25,7 +25,7 @@ Our test functions are typical non-smooth functions, where gradient-based optimi
 
 ## First version
 
-The first version of 'gloptim' got implemented in the source files `gloptim.R`, containing a set of local wrappers, and `glopt.R` for callinf several or all of these local wrappers and returning a dataframe with their results.
+The first version of 'gloptim' got implemented in the source files `gloptim.R`, containing a set of local wrappers, and `glopt.R` for calling several or all of these local wrappers and returning a dataframe with their results.
 
     source("gloptim")
     source("glopt.R")
