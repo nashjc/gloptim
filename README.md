@@ -10,7 +10,7 @@ The following functions in CRAN packages are considered:
     "deopt", "simplede", "simpleea",              # Evolutionary Algorithms
     "gensa", "ga", "genoud",                      # Genetic Algorithms
     "pso", "psopt", "hydropso",                   # Particle Swarm Optimization
-    "direct", "crs2lm", "isres", "stogo",         # Stochastic optimizeres in 'NLoptr'
+    "direct", "crs2lm", "isres", "stogo",         # Stochastic optimizers in 'NLoptr'
     "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # CMA-ES, Evolution Strategy
     "malschains", "ceimopt",                      # MA-LS-chains, Memetic Algorithms
     "smco", "soma")                               # --others--
