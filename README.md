@@ -30,7 +30,7 @@ The first version of 'gloptim' got implemented in the source files `gloptim.R`, 
     source("gloptim")
     source("glopt.R")
 
-Now we call, for example, apply several Differential Evolution minimizers and compare the results.
+Now we can, for example, apply several Differential Evolution minimizers and compare the results.
 
 
 ## Second version
