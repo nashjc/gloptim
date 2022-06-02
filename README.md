@@ -12,7 +12,7 @@ The following functions in CRAN packages are considered:
     "pso", "psopt", "hydropso",                   # Particle Swarm Optimization
     "direct", "crs2lm", "isres", "stogo",         # Stochastic optimizeres in 'NLoptr'
     "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # CMA-ES, Evolution Strategy
-    "malschains", "ceimopt",                      # CE
+    "malschains", "ceimopt",                      # MA-LS-chains, Memetic Algorithms
     "smco", "soma")                               # --others--
 
 
