@@ -12,16 +12,14 @@
 }
 \usage{
 
-glopt(fn, lb, ub, x0 = NULL, rand = FALSE,
-      maxiter = NULL, popsize = NULL,
-      g = NULL, gr = NULL,
-      incl = NULL, excl = NULL, ...) 
+glopt(fn, lb, ub, x0 = NULL, maxiter = NULL, popsize = NULL,
+      gr = NULL, incl = NULL, excl = NULL, ...) 
 }
 
 \arguments{
   \item{fn}{Nonlinear objective function to be optimized, a scalar function
-            that takes a real vector as argument and returns a scalar that is
-            the value of the function at that point.}
+            that takes a real vector of length n as argument and returns a 
+            scalar that is the value of the function at that point.}
   \item{lb, ub}{Lower and upper bounds on the parameters, the same length
                 as the variables of the objective function.}
   \item{x0}{Some solvers allow or require an initial value; optional}
@@ -52,9 +50,12 @@ glopt(fn, lb, ub, x0 = NULL, rand = FALSE,
   methods from the include list
 }
 \value{
-  A list with the following components:
-  \item{xmin}{Best estimate of the parameter vector found by the algorithm.}
-  \item{fmin}{value of the objective function at termination.}
+  A dataframe with one row per solver attempted and the following columns:
+  \item{method}{The name of the solver method.}
+  \item{fminimum}{Value of the objective function at termination of this solver.}
+  \item{time}{Time taken to attempt the minimization with this solver.}
+  \item{p1...pn}{Parameters of the best estimate of the minimum found
+       by the method.}
 }
 \author{
   Hans W Borchers  <hwborchers@googlemail.com> and \cr
