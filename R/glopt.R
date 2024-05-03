@@ -1,9 +1,8 @@
 ##
 ##  g l o p t . R
 ##
-glopt <- function(fn, lb, ub, x0 = NULL,  gr = NULL,
-                  maxiter = NULL, popsize = NULL,
-                  incl = NULL, excl = NULL, ...) {
+glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL, 
+                  incl = NULL, excl = NULL, control=NULL,...) {
     all_methods <-
         c("deoptim", "cppdeoptim", "deoptimr",          # **DE**
           "deopt", "simplede", "simpleea",              # **EA**
@@ -28,7 +27,8 @@ glopt <- function(fn, lb, ub, x0 = NULL,  gr = NULL,
     for (m in incl) {
         im <- which(incl == m)
         tm <- system.time(
-            sol <- gloptim(fn, lb, ub, x0 = x0, method=m, gr=gr, ...)
+            sol <- gloptim(fn, lb, ub, x0 = x0, method=m, gr=gr, 
+                   control, ...)
         )
         mthd <- c(mthd, m); fminimum <- c(fminimum, sol$fmin)
         thetime <- c(thetime, unname(tm["elapsed"]))

@@ -2,8 +2,7 @@
 ##  g l o p t i m . R
 ##
 
-gloptim <- function(fn, lb, ub,
-                    x0 = NULL, rand = FALSE,
+gloptim <- function(fn, lb, ub, x0 = NULL,  
         method = c("deoptim", "cppdeoptim", "deoptimr",         # **DE**
                    "deopt", "simplede", "simpleea",             # **EA**
                    "gensa", "ga", "genoud", # "rbga"            # **GA**
@@ -12,10 +11,10 @@ gloptim <- function(fn, lb, ub,
                    "cmaoptim", "cmaes", "cmaesr", "purecmaes",  # **CMA-ES**
                    "malschains", "ceimopt",                     # **CE**
                    "smco", "soma"), # "tabusearch"              # --others--
-        type = NULL,
-        g = NULL, gr = NULL,
+        rand = FALSE, type = NULL, g = NULL, gr = NULL,
         control = list(), ...) {
 
+    if (is.null(rand)) rand <- FALSE
     fn1 <- function(par) fn(par,...) # avoid dotarg clashes
 
 #   probably don't need f

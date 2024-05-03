@@ -12,8 +12,8 @@
 }
 \usage{
 
-glopt(fn, lb, ub, x0 = NULL, maxiter = NULL, popsize = NULL,
-      gr = NULL, incl = NULL, excl = NULL, ...) 
+glopt(fn, lb, ub, x0 = NULL, gr = NULL, incl = NULL, 
+                excl = NULL, control=NULL, ...) 
 }
 
 \arguments{
@@ -23,23 +23,14 @@ glopt(fn, lb, ub, x0 = NULL, maxiter = NULL, popsize = NULL,
   \item{lb, ub}{Lower and upper bounds on the parameters, the same length
                 as the variables of the objective function.}
   \item{x0}{Some solvers allow or require an initial value; optional}
-  \item{method}{A character string specifying the solver to be applied;
-                for the current options see the \bold{Details} below.}
-  \item{type}{A characterization of the function -- not used at the moment.}
   \item{gr}{Gradient of the objective functions -- not used at the moment.}
-  \item{control}{A list of control parameters;
-       see \bold{Details} for more information.}
-  \item{maxiter}{maximum number of iterations.}
-  \item{popsize}{size of population.}
   \item{incl}{character vector of methods to include.}
   \item{excl}{character vector of methods to exclude.}
+  \item{control}{A list of control parameters;
+       see \bold{Details} for more information.}
   \item{\dots}{Additional arguments passed to the objective function \code{fn}.}
 }
 \details{
-  \code{gloptim} is a wrapper function for stochastic/global solvers available.
-  See the \bold{usage} section for the list of solvers in different R packages
-  that can be named as methods.
-
   Argument \code{control} is a list specifing changes to default values of the
   algorithm control parameters. If the minimization process threatens to go into
   an infinite loop, try to set \code{maxiter}.
