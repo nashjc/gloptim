@@ -36,3 +36,9 @@ Now we can, for example, apply several Differential Evolution minimizers and com
 ## Second version
 
 This version developed in connection with the Google Summer of Code (GSoC) 2021 project 'StochOptim'.
+
+## 2024 version
+
+This version is an attempt to make an R package out of 'gloptim'. Note that there are some changes
+to handle dot-args (...) in function 'glopt()'. Also all tools aim to MINIMIZE functions. We may wish
+to revisit this later. (JN 2024-5-3)
