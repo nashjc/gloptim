@@ -1,5 +1,5 @@
 ---
-title: "gloptim -- a wrapper for global optimization methods in R"
+title: "gloptim -- a wrapper for global / stochastic optimization methods in R"
 author: "Hans Werner Borchers & John C. Nash"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -8,27 +8,34 @@ vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
+Abstract:
+  R has a number of packages that purport to solve function minimization or 
+  maximization (i.e., optimization) problems via stochastic search methods.
+  A primary intention of such methods is to allow global optima to be found.
+  For users the differences in calling sequences and setup to use these tools
+  is a burden that the present wrapper package is intended to ease. However,
+  we caution that there are so many options and special features that `gloptim`
+  must be considered a work in progress.
 ---
 
-##gloptim -- a wrapper for global optimization methods in R##
-
-??JN: I don't think indexing works in Rmarkdown, but suggest we keep some
-sort of suggestion of the terms we want indexed. 
 \index{global optimization}
 \index{stochastic optimization}
 
-##Introduction and purpose##
+<!-- JN: I will use ?? to indicate issues where I need to resolve choices or -->
+<!-- want to clarify (perhaps in my own mind!) -->
+
+
+# Introduction and purpose
 
 This vignette is a working document to record efforts to unify the calls to 
 a number of global optimization methods available in packages for
-**R**. JN: I will use ?? to indicate issues where I need to resolve choices or
-want to clarify (perhaps in my own mind!)
-
-There are very many methods offered for these problems, both generally and in
-**R**, and, sadly, many of the offerings are weak and/or simply renamings or
-very minor adjustments of other programs. This creates a challenge for the 
-novice user. By "novice" we simply mean someone not well-versed in stochastic
-or global optimization, not a novice in **R** or their field of work. Moreover,
+**R**. 
+There are very many methods proposed for the task of global optimization, 
+both generally and in **R**. Sadly, many of the offerings are weak and/or 
+simply renamings or very minor adjustments of other programs. This creates a 
+challenge for the novice user. By "novice" we simply mean someone not well-versed 
+in stochastic or global optimization, who may nevertheless be knowledgeable
+in **R** or their field of work. Moreover,
 it is common even among optimization workers that there are classes of methods
 which are unfamiliar.
 
@@ -36,67 +43,64 @@ This document will attempt
 
    - to list available stochastic and global optimization methods in **R**
    
-   - to select those suitable for inclusion in a generic wrapper call, those
-     that are unsuitable, and those worthy of further investigation
+   - to suggest those suitable for general use, those
+     that seem to be almost always unsuitable, and those worthy of further investigation
      
    - to document the choices made, and the successes and failures. Where 
-     reasonable, the heavy detail will be moved to appendices, but an 
-     effort will be made to record all major attempts and failures.
+     reasonable, we will avoid heavy detail, but an 
+     effort will be made to record all major issues.
      
-
-##Proposed call structure##
+# Proposed call structure
 
 This section proposes a call and its arguments.
 
-The `base` package in **R** has the method `SANN` (for Simulated
-ANNealing) in the function `optim()`, so we will start with the call to 
-that function, namely, 
+The `base` package in **R** -- the distributed collection of software that is
+provided at https://cran.r-project.org/ -- has the stochastic optimization method
+`SANN` (for Simulated ANNealing) in the function `optim()`, which suggests a template
+for a calling syntax. 
 
      ans <- optim(start, function, gradient, method="Name", lower=lb, 
              upper=ub, control=list())
 
-Key issues:
+This structure has also been adopted as the one for function `optimr()` in 
+package `optimx` (@JNRV11, https://cran.r-project.org/web/packages/optimx/index.html),
+and has proven to be a sensible choice.
+
+Key issues in use of this :
 
     - initiation methods or specification of the starting point or region
 
     - termination criteria
 
-    - method controls and appropriate defaults
+    - method controls and, in particular, appropriate defaults
 
     - agreed names for controls and arguments, since packages use many choices
     
+    - quality of the implementation, or similar factors that impact success in 
+      use.
     
-    
-##Candidate packages and methods##
+# Candidate packages and methods 
 
-This is a fairly long and messy section, but is necessary to allow for choices.
+There are many approaches that have been tried for global optimization. Unfortunately
+there are many which are simply renamings or very minor adjustments of existing 
+tools. For tools in **R**, we recommend readers consult the /CRAN Task View: Optimization 
+and Mathematical Programming/ (@CTVOptimization).
 
-There are many names associated with global optimization methods:
-Simulated Annealing, Genetic Algorithms, Tabu Search, differential evolution,
-particle swarm optimization, Self-Organizing Migrating Algorithm. 
+Here we will divide methods into families, then suggest some of the R packages that
+claim to implement them. 
 
-?? JN: I'm happy to have more methods added, as well as to have comments on those
-to include, exclude, or maybe. I suggest marking them ?include?, ?exclude? and ?maybe?
-so we can search and find easily.
-
-?? 170117 -- replace Rastrigin with ?? as the "example" function. We need something
-that is quick to evaluate to avoid slow processing of this vignette which will have
-lots of examples. The purpose is to show the call and check the code works, not to
-test performance.
-
-###simulated annealing###
+## Simulated annealing
 
 \index{SANN@`SANN()`}
 
-####SANN####
+### SANN
 
 method `SANN` in function `optim()` is a simulated annealing method that 
 uses ONLY the iteration count as a termination criterion. We STRONGLY 
 recommend against its use, but its presence in the **base** package 
 leads to its use by novices. ?exclude?
 
-
-####GenSA####
+### GenSA
 \index{GenSA@\`GenSA`}
 
 `GenSA` Generalized simulated annealing. Unlike the `optim()` method
@@ -107,7 +111,7 @@ several controls for terminating the optimization process @GenSA13.
 \index{likelihood@`likelihood`}
 
 
-####likelihood####
+### likelihood
 
 `likelihood` uses simulated annealing as its optimization tool. Unfortunately,
 at the time of writing, this is particularized to the objective functions of the
@@ -115,7 +119,7 @@ package, but the author (Lora Murphy) has shown interest in generalizing the
 optimizer, which is written in **R** @LMurphy12.
 
 
-####GrassmannOptim####
+### GrassmannOptim
 
 \index{GrassmannOptim@`GrassmannOptim`}
 
@@ -127,50 +131,27 @@ optimization @Grassmann12.
 ?maybe?
 
 
-###Differential evolution###
-
-\index{differential evolution}
-\index{DEoptim@\`DEoptim`}
-
-####DEoptim####
-
-`DEoptim`: Global optimization by Differential Evolution. This package has
-many references, but here we will choose to point to @DEoptimJSS11. 
-?include?
-
-\index{RcppDE@`RcppDE`}
-
-####RcppDE####
-
-`RcppDE`: Global optimization by differential evolution in C++, aimed
-at a more efficient interface to the `DEoptim` functionality @RcppDE12.
-?include?
-
-
-###Genetic methods###
+## Genetic Algorithms
 
 \index{genetic optimization methods}
 
-
-####rgenoud####
+### rgenoud
 
 \index{rgenoud@`rgenoud`}
 
 `rgenoud`: R version of GENetic Optimization Using Derivatives @rgenoud11.
 ?include?
 
-
-####GA####
+### GA
 
 \index{GA@`GA`}
 
 `GA`: Genetic Algorithms -- a set of tools for maximizing a fitness function 
      @p-GA. 
      A number of examples are included, including minimization of a 2-dimenstional
-     Rastrigin function (we use a 5-dimensional example below).
-?include?
+     Rastrigin function (we use a 5-dimensional example below). ?include?
 
-####gaoptim####
+### gaoptim
 
 \index{gaoptim@\`gaoptim`}
 
@@ -180,7 +161,7 @@ not find that this package worked at all well for me, though I suspect I may hav
 misunderstood the documentation. 
 ?maybe?
 
-####rgp####
+### rgp
 
 \index{rgp@`rgp`}
 
@@ -189,7 +170,7 @@ used for stochastic optimization, but the structure of the package makes it diff
 to modify existing scripts to the task. The documentation of package `nsga2R` 
 ?maybe?
 
-####nsga2R####
+### nsga2R
 
 \index{nsga2R@`nsga2R`}
 
@@ -197,8 +178,7 @@ to modify existing scripts to the task. The documentation of package `nsga2R`
 view,  such that I could not figure out how to use it to minimize a function. 
 ?maybe?
 
-
-####mcga####
+### mcga
 
 \index{mcga@`mcga`}
 
@@ -209,24 +189,62 @@ minimization. Many genetic and related codes seek maxima.
 ?maybe?
 
 
+## Tabu Search
 
-###Other approaches###
 
-####Rmalschains####
+## Differential evolution,
+\index{differential evolution}
+\index{DEoptim@\`DEoptim`}
+
+### DEoptim
+
+`DEoptim`: Global optimization by Differential Evolution. This package has
+many references, but here we will choose to point to @DEoptimJSS11. 
+?include?
+
+\index{RcppDE@`RcppDE`}
+
+### RcppDE
+
+`RcppDE`: Global optimization by differential evolution in C++, aimed
+at a more efficient interface to the `DEoptim` functionality @RcppDE12.
+?include?
+
+## particle swarm optimization
+
+## Self-Organizing Migrating Algorithm. 
+
+@soma11
+
+## Stochastic restart 
+
+An /ad hoc/ approach that has occasionally had success is to 
+generate random starting vectors for a deterministic function minimizer.
+Without some consideration of the particular aspects of both the problem
+and the chosen function minimization solver, this is generally inefficent and/or
+unsuccessful.
+
+
+
+## Other approaches
+
+### Rmalschains
 
 \index{Rmalschains@`Rmalschains`}
 
 `Rmalschains`: Continuous Optimization using Memetic Algorithms with Local Search Chains (MA-LS-Chains) in R @Rmalschains12. I confess to knowing rather little about this approach.
 ?include?
 
-####smco####
+### smco
 
 \index{smco@`smco`}
 
 `smco`: A simple Monte Carlo optimizer using adaptive coordinate sampling @smco12.
-?include?
+?include?  -- archived package 
 
-####soma####
+
+
+### soma
 
 \index{soma@`soma`}
 
@@ -234,16 +252,18 @@ minimization. Many genetic and related codes seek maxima.
 @soma11. Again, this approach is one with which I am not familiar.
 ?maybe?
 
-####pso [particle swarm optimization]####
+### pso [particle swarm optimization]
 
-####rCMA [CMA-ES]####
+### rCMA [CMA-ES]
 
 
-##An example problem##
+# Example problems
 
 ??JN: Do we want one or two more? Rastrigin is over-used. Replace??
 
-To illustrate our attempted wrapper we will use a well-known multimodal test function 
+## Rastrigin problem
+
+To illustrate our attempted wrapper we will first use a well-known multimodal test function 
 called the Rastrigin function @TZ89, @MSB91. This is defined in the examples for
 package `GenSA` as follows.
 
@@ -271,18 +291,23 @@ lower and upper bounds constraints on our parameters, and set a start vector.
 ??JN: I suggest we always show code to run the problem in the native method, then
 in our wrapper as a way to ensure we have got things more or less right.
 
-###Method `SANN` from `optim()`###
+### Method `SANN` from `optim()`
 
 \index{SANN@`SANN()`}
 \index{optim@`optim()`}
+
+Unfortunately, the documentation of this method in `optim()` says
 
           For ``SANN'' `maxit' gives the total number of function
           evaluations: there is no other stopping criterion. Defaults
           to `10000'.
 
+This means there is no test that we have found a minimum. Moreover, the
+method does not terminate until the `maxit` function evaluations are complete.
 Nonetheless, let us try this method on our 5-dimensional problem, using all 1s as
 a start. We will also fix a random number generator seed and reset this for each
 method to attempt to get some consistency in output. 
+
 ?? JN: our wrapper is almost certain to need random number setting
 
 
@@ -297,7 +322,7 @@ Sadly, not only do we make no progress, but the convergence code of 0 implies we
 a "success", even though we have used the maximum number of function evaluations 
 permitted. My opinion is that SANN should be dropped from the function `optim()`.
 
-####Package `GenSA`####
+### Package `GenSA`
 
 \index{GenSA@`GenSA`}
 
@@ -318,7 +343,7 @@ print(aGenSA1[c("value","par","counts")])
 ```
 
 
-###Packages `DEoptim` and `RcppDE`###
+### Packages `DEoptim` and `RcppDE`
 
 \index{DEoptim@`DEoptim`}
 \index{RcppDE@`RcppDE}}
@@ -373,8 +398,9 @@ aRcppDEopt1b <- DEoptim(lower = lower, upper = upper, fn = Rastrigin, control=ct
 print(aRcppDEopt1b$optim)
 ```
 
+### Package `smco`
 
-####Package `smco`####
+The `smco` package has unfortunately been archived from CRAN. ?? when? / why?
 
 \index{smco@`smco`}
 
@@ -395,7 +421,7 @@ asmco1 <- smco(par=rep(1,dimension), LB = lower, UB = upper, fn = Rastrigin,
 print(asmco1[c("par", "value")])
 ```
 
-####Package `soma`####
+### Package `soma`
 
 \index{soma@`soma`}
 
@@ -433,7 +459,7 @@ running
 
 before each run gives reproducible results.      
 
-####Package `Rmalschains`####
+### Package `Rmalschains`
 
 \index{Rmalschains@`Rmalschains`}
 
@@ -456,7 +482,7 @@ amals<-malschains(Rastrigin, lower=lower, upper=upper,
 print(amals)
 ```
 
-###Package `rgenoud`###
+### Package `rgenoud`
 
 \index{rgenoud@\`rgenoud`}
 
@@ -475,7 +501,7 @@ agen1<-genoud(Rastrigin, nvars=dimension, max=FALSE, print.level=0)
 print(agen1)
 ```
 
-###Package `GA`###
+### Package `GA`
 
 \index{GA@`GA`}
 
@@ -494,7 +520,7 @@ aGA1<-ga(type = "real-valued", fitness = function(x) -Rastrigin(x),
 print(summary(aGA1))
 ```
 
-###Package `gaoptim`###
+### Package `gaoptim`
 \index{gaoptim@\`gaoptim`}
 
 Until I communicated with the maintainer of `gaoptim` @p-gaoptim, I had some
@@ -541,7 +567,7 @@ Note that, as with most global methods, there are long stretches of work
 where we do not see any progress.
 
 
-##Multiple starting values##
+## Multiple starting values approach (NOT in gloptim)
 
 \index{starting point!multiple}
 \index{multiple starts}
@@ -740,6 +766,19 @@ for (ii in 1:npt){
     cat(vrow,"\n")
 }
 ```
+
+
+
+?? JN: I'm happy to have more methods added, as well as to have comments on those
+to include, exclude, or maybe. I suggest marking them ?include?, ?exclude? and ?maybe?
+so we can search and find easily.
+
+?? 170117 -- replace Rastrigin with ?? as the "example" function. We need something
+that is quick to evaluate to avoid slow processing of this vignette which will have
+lots of examples. The purpose is to show the call and check the code works, not to
+test performance.
+
+
 
 #References#
 
