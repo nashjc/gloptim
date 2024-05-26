@@ -13,6 +13,8 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
           "malschains", "ceimopt",                      # **CE**
           "smco", "soma")                               # --others--
 
+    cat("glopt: control="); print(control)
+
     if (is.null(incl))  incl <- all_methods
     if (!is.null(excl)) incl <- setdiff(incl, excl)
     nm<-length(incl)
@@ -28,7 +30,7 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
         im <- which(incl == m)
         tm <- system.time(
             sol <- gloptim(fn, lb, ub, x0 = x0, method=m, gr=gr, 
-                   control, ...)
+                   rand=FALSE, control, ...)
         )
         mthd <- c(mthd, m); fminimum <- c(fminimum, sol$fmin)
         thetime <- c(thetime, unname(tm["elapsed"]))

@@ -3,18 +3,28 @@
 ##
 
 gloptim <- function(fn, lb, ub, x0 = NULL,  
-        method = c("deoptim", "cppdeoptim", "deoptimr",         # **DE**
-                   "deopt", "simplede", "simpleea",             # **EA**
-                   "gensa", "ga", "genoud", # "rbga"            # **GA**
-                   "pso", "psopt", "hydropso", # "psoptim"      # **PSO**
-                   "direct", "crs2lm", "isres", "stogo",        # **NLoptr**
-                   "cmaoptim", "cmaes", "cmaesr", "purecmaes",  # **CMA-ES**
-                   "malschains", "ceimopt",                     # **CE**
-                   "smco", "soma"), # "tabusearch"              # --others--
-        rand = FALSE, type = NULL, g = NULL, gr = NULL,
-        control = list(), ...) {
+        method = c("deoptim", "cppdeoptim", "deoptimr", 
+                   "deopt", "simplede", "simpleea",     
+                   "gensa", "ga", "genoud", 
+                   "pso", "psopt", "hydropso", 
+                   "direct", "crs2lm", "isres", "stogo", 
+                   "cmaoptim", "cmaes", "cmaesr", "purecmaes",
+                   "malschains", "ceimopt", "smco", "soma"), 
+                   control=list(), 
+                   rand = FALSE, type = null, gr = NULL, ...) {
+##        method = c("deoptim", "cppdeoptim", "deoptimr",         # **DE**
+#                   "deopt", "simplede", "simpleea",             # **EA**
+#                   "gensa", "ga", "genoud", # "rbga"            # **GA**
+#                   "pso", "psopt", "hydropso", # "psoptim"      # **PSO**
+#                   "direct", "crs2lm", "isres", "stogo",        # **NLoptr**
+#                   "cmaoptim", "cmaes", "cmaesr", "purecmaes",  # **CMA-ES**
+#                   "malschains", "ceimopt",                     # **CE**
+#                   "smco", "soma"), # "tabusearch"              # --others--
+##        rand = FALSE, type = NULL, g = NULL, gr = NULL,
+##         control = list(), ...) {
 
-    if (is.null(rand)) rand <- FALSE
+    cat("rand="); print(rand)
+    if (is.null(rand)) { rand <- FALSE }
     fn1 <- function(par) fn(par,...) # avoid dotarg clashes
 
 #   probably don't need f
@@ -134,7 +144,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
                                # pop.size = cntrl$popsize,
                                # max.generations = cntrl$maxiter,
                                Domains = cbind(lb, ub), boundary.enforcement = 1,
-                               print.level = 0)
+                               print.level = cntrl$trace)
         return(list(xmin = sol$par, fmin = sol$value))
 
     ## Particle Swarm Optimization (PSO) in packages pso, psoptim, and NMOF

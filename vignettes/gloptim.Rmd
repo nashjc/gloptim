@@ -583,10 +583,19 @@ across each coordinate. Note we do not do very well.
 
 ```{r, rastriginRvmmin1}
 suppressPackageStartupMessages(require(optimx))
+Rastrigin <- function(x) {
+       sum(x^2 - 10 * cos(2 * pi  * x)) + 10 * length(x)
+}
 nrep<-500
+dimension <- 5 # though set before, reset here
+myseed <- 1234 # just in case
+lower <- rep(-5.12, dimension)
+upper <- rep(5.12, dimension)
+start1 <- rep(1, dimension)
 bestval<-.Machine$double.xmax # start with a big number
 bestpar<-rep(NA, dimension)
 startmat<-matrix(NA, nrow=nrep, ncol=dimension)
+sval <- rep(NA, nrep)
 set.seed(myseed)
 for (i in 1:nrep) {
     for (j in 1:dimension){
@@ -596,6 +605,7 @@ for (i in 1:nrep) {
 for (i in 1:nrep){
    tstart<-as.vector(startmat[i,]) 
     ans<-Rvmmin(tstart, Rastrigin, lower=lower, upper=upper)
+    sval[i] <- ans$value
    if (ans$value <= bestval) {
       bestval<-ans$value
       cat("Start ",i," new best =",bestval,"\n")
@@ -604,6 +614,7 @@ for (i in 1:nrep){
    }
 }
 print(bestans)
+
 ```
 
 On the other hand, we don't have to try very hard to find what turns out to be
