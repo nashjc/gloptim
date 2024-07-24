@@ -129,7 +129,8 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
     } else if (method == "ga") {
         s <- -1 # ONLY minimize in gloptim
         fnf <- function(x) s * fn1(x)
-        sol <- GA::ga(type = "real-valued", fitness = fn,
+# JN: 20240724 -- change fitness = fn to fitness = fnf or maximizes
+        sol <- GA::ga(type = "real-valued", fitness = fnf,
                       min = lb, max = ub,
                       popSize = cntrl$popsize,
                       maxiter = cntrl$maxiter,
