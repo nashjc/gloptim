@@ -9,9 +9,10 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
                    "pso", "psopt", "hydropso", 
                    "direct", "crs2lm", "isres", "stogo", 
                    "cmaoptim", "cmaes", "cmaesr", "purecmaes",
-                   "malschains", "ceimopt", "smco", "soma"), 
+                   "malschains", "ceimopt", "smco", "soma",
+                   "ABC"), 
                    control=list(), 
-                   rand = FALSE, type = null, gr = NULL, ...) {
+                   rand = FALSE, gr = NULL, ...) {
 ##        method = c("deoptim", "cppdeoptim", "deoptimr",         # **DE**
 #                   "deopt", "simplede", "simpleea",             # **EA**
 #                   "gensa", "ga", "genoud", # "rbga"            # **GA**
@@ -66,11 +67,9 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
     }
     if (cntrl$trace > 0){cat("Global solver/method:", method, "\n")}
 
-
-
-    ## Differential Evolution (DE) in packages DEoptim and DEoptimR
+        ## Differential Evolution (DE) in packages DEoptim and DEoptimR
     if (method == "deoptim") {
-        sol <- DEoptim::DEoptim(fn, lower = lb, upper = ub,
+        sol <- DEoptim::DEoptim(fn = fn1, lower = lb, upper = ub,
                                 DEoptim::DEoptim.control(
                                 trace = cntrl$info, itermax = cntrl$maxiter))
         return(list(xmin = sol$optim$bestmem, fmin = sol$optim$bestval,
@@ -78,7 +77,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
                     commment = ""))
 
     } else if (method == "cppdeoptim") {
-        sol <- RcppDE::DEoptim(fn, lower = lb, upper = ub,
+        sol <- RcppDE::DEoptim(fn = fn1, lower = lb, upper = ub,
                                 RcppDE::DEoptim.control(
                                 trace = cntrl$info, itermax = cntrl$maxiter))
         return(list(xmin = sol$optim$bestmem, fmin = sol$optim$bestval,
@@ -88,14 +87,14 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
 
     } else if (method == "deoptimr") {
         sol <- DEoptimR::JDEoptim(lower = lb, upper = ub,
-                                  fn = fn,
+                                  fn = fn1,
                                   maxiter = cntrl$maxiter)
         return(list(xmin = sol$par, fmin = sol$value,
                     niter = sol$iter, nfeval = NA,
                     comment = ""))
 
     } else if (method == "deopt") {
-        sol <- NMOF::DEopt(OF = fn,
+        sol <- NMOF::DEopt(OF = fn1,
                            algo = list(nP = cntrl$popsize, nG = cntrl$maxiter,
                                        min = lb, max = ub,
                                        printDetail = 2 * cntrl$info,
@@ -105,20 +104,20 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
                     comment = ""))
 
     } else if (method == "simplede") {
-        sol <- adagio::simpleDE(fun = fn, lower = lb, upper = ub,
+        sol <- adagio::simpleDE(fun = fn1, lower = lb, upper = ub,
                                 N = cntrl$popsize, nmax = cntrl$maxiter,
                                 log = cntrl$info)
         return(list(xmin = sol$xmin, fmin = sol$fmin))
 
     } else if (method == "simpleea") {
-        sol <- adagio::simpleEA(fn = fn, lower = lb, upper = ub,
+        sol <- adagio::simpleEA(fn = fn1, lower = lb, upper = ub,
                                 # N = cntrl$popsize,
                                 log = cntrl$info)
         return(list(xmin = sol$par, fmin = sol$val))
         
     ## Simulated Annealing (SA) in package GenSA
     } else if (method == "gensa") {
-        sol <- GenSA::GenSA(fn=fn, lower=lb, upper=ub,
+        sol <- GenSA::GenSA(fn=fn1, lower=lb, upper=ub,
                             control=list(maxit=cntrl$maxiter,
                                          smooth=FALSE,
                                          trace.mat=cntrl$info))
@@ -128,20 +127,22 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
     ## Genetic Algorithms (GA) in package GA
     } else if (method == "ga") {
         s <- -1 # ONLY minimize in gloptim
-        fnf <- function(x) s * fn1(x)
+        fnf <- function(x) {s * fn1(x)}
 # JN: 20240724 -- change fitness = fn to fitness = fnf or maximizes
-        sol <- GA::ga(type = "real-valued", fitness = fnf,
-                      min = lb, max = ub,
+        gasol <- GA::ga(type = "real-valued", fitness = fnf,
+                      lower = lb, upper = ub, 
                       popSize = cntrl$popsize,
                       maxiter = cntrl$maxiter,
                       monitor = cntrl$info)
-        return(list(xmin = sol@solution, fmin = s * sol@fitnessValue))
-
-    ## 
+        # changed min to lower, max to upper (deprecated form replaced)
+        gafmin<-as.numeric(gasol@fitnessValue)
+        gaxmin<-gasol@solution
+        ## gasol is ga-class object. (expletives deleted!!)
+        return(list(xmin = gaxmin, fmin = s * gafmin))
     } else if (method == "genoud") {
         if (is.null(gr))
             gr <- function(x) rep(0, d)
-        sol <- rgenoud::genoud(fn = fn, nvars = d, gr = gr,
+        sol <- rgenoud::genoud(fn = fn1, nvars = d, gr = gr,
                                # pop.size = cntrl$popsize,
                                # max.generations = cntrl$maxiter,
                                Domains = cbind(lb, ub), boundary.enforcement = 1,
@@ -151,13 +152,13 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
     ## Particle Swarm Optimization (PSO) in packages pso, psoptim, and NMOF
     } else if (method == "pso") {
         if (is.null(x0)) x0 <- rep(NA, d)
-        sol <- pso::psoptim(par=x0, fn = fn,
+        sol <- pso::psoptim(par=x0, fn = fn1,
                             lower = lb, upper = ub,
                             control=list(maxit=cntrl$maxiter))  # maxf=14*maxit
         return(list(xmin = sol$par, fmin = sol$value))
 
     } else if (method == "psopt") {
-        sol <- NMOF::PSopt(OF = fn,
+        sol <- NMOF::PSopt(OF = fn1,
                            algo = list(nP = cntrl$popsize, nG = cntrl$maxiter,
                                        min = lb, max = ub,
                                        printDetail = 0, printBar = FALSE))
@@ -182,7 +183,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
 #         return(list(xmin = sol$sol, fmin = sol$val))
 
     } else if (method == "hydropso") {
-        sol <- hydroPSO::hydroPSO(par = x0, fn = fn,
+        sol <- hydroPSO::hydroPSO(par = x0, fn = fn1,
                                   lower = lb, upper = ub,
                                   control = list(npart = cntrl$popsize,
                                                  maxit = cntrl$maxiter,
@@ -191,7 +192,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
 
     ## Cross Entropy (CE) inspired methods in packages RCEIM and CEoptim
     } else if (method == "ceimopt") {
-        sol <- RCEIM::ceimOpt(OptimFunction = fn, nParams = d,
+        sol <- RCEIM::ceimOpt(OptimFunction = fn1, nParams = d,
                               Ntot = cntrl$popsize, maxIter = cntrl$maxiter,
                               boundaries = cbind(lb, ub),
                               verbose = cntrl$info)
@@ -201,7 +202,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
 
     ## Different stochastic solvers in package nloptr
     } else if (method == "direct") {
-        sol <- nloptr::direct(fn = fn, lower = lb, upper = ub,
+        sol <- nloptr::direct(fn = fn1, lower = lb, upper = ub,
                               control = list(maxeval = 10*cntrl$maxiter),
                               nl.info = cntrl$info)
         return(list(xmin = sol$par, fmin = sol$value))
@@ -214,14 +215,14 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
         return(list(xmin = sol$par, fmin = sol$value))
 
     } else if (method == "isres") {
-        sol <- nloptr::isres(x0 = x0, fn = fn,
+        sol <- nloptr::isres(x0 = x0, fn = fn1,
                              lower = lb, upper = ub,
                              maxeval = 10*cntrl$maxiter, pop.size = cntrl$popsize,
                              xtol_rel = 1e-7, nl.info = cntrl$info)
         return(list(xmin = sol$par, fmin = sol$value))
 
     } else if (method == "stogo") {
-        sol <- nloptr::stogo(x0 = x0, fn = fn, gr = NULL,
+        sol <- nloptr::stogo(x0 = x0, fn = fn1, gr = NULL,
                              lower = lb, upper = ub,
                              maxeval = cntrl$maxiter,
                              nl.info = cntrl$info)
@@ -232,7 +233,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
     } else if (method == "cmaoptim") {
         cma_obj <- rCMA::cmaNew()
         rCMA::cmaInit(cma_obj, dimension=d)
-        sol <- rCMA::cmaOptimDP(cma_obj, fitFunc = fn,
+        sol <- rCMA::cmaOptimDP(cma_obj, fitFunc = fn1,
                                 verbose = 0)
         return(list(xmin = sol$bestX, fmin = sol$bestFitness))
 
@@ -252,20 +253,20 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
             ParamHelpers::makeNumericParamSet("R", len=d,
                                 lower=lb, upper=ub)
         fn_fun <- 
-            smoof::makeSingleObjectiveFunction("Function", fn = fn,
+            smoof::makeSingleObjectiveFunction("Function", fn = fn1,
                                         par.set = fn_parset)
         sol <- cmaesr::cmaes(fn_fun, start.point = x0,
                              monitor = NULL)
         return(list(xmin = sol$best.param, fmin = sol$best.fitness))
 
     } else if (method == "purecmaes") {
-        sol <- adagio::pureCMAES(par = x0, fun = fn,
+        sol <- adagio::pureCMAES(par = x0, fun = fn1,
                                  lower = lb, upper = ub,
                                  stopeval=5*d*cntrl$maxiter)
         return(list(xmin = sol$xmin, fmin = sol$fmin))
 
     } else if (method == "malschains") {
-        sol <- Rmalschains::malschains(fn = fn, dim = d,
+        sol <- Rmalschains::malschains(fn = fn1, dim = d,
                                        lower = lb, upper = ub,
                                        maxEvals = cntrl$popsize * cntrl$maxiter,
                                        verbosity = 0)
@@ -273,19 +274,29 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
 
     ## Monte Carlo Optimizer (MCO) in package smco
     } else if (method == "smco") {
-        sol <- smco::smco(fn = fn, gr = NULL, N = d, 
+        sol <- smco::smco(fn = fn1, gr = NULL, N = d, 
                     LB = lb, UB = ub,
                     maxiter = cntrl$maxiter, trc = cntrl$info)
         return(list(xmin = sol$par, fmin = sol$value))
 
     ## Self-Organizing Optimization (SOM) algorithm in package soma
     } else if (method == "soma") {
-        sol <- soma::soma(costFunction = fn,
+        sol <- soma::soma(costFunction = fn1,
                     bounds=list(min=lb, max=ub) )
         best <- sol$leader
         xmin <- (sol$population)[ ,best]
         return(list(xmin = xmin, fmin = (sol$cost)[best]) )
-
+    ## Artificial Bee Colony
+    # abc_optim(par, fn, ..., FoodNumber = 20, lb = rep(-Inf, length(par)),
+    #  ub = rep(+Inf, length(par)), limit = 100, maxCycle = 1000,
+    #  optiinteger = FALSE, criter = 50, parscale = rep(1, length(par)),
+    #  fnscale = 1)
+    } else if (method == "ABC") {
+        sol <- ABCoptim::abc_optim(par = x0, fn = fn1, lb=lb, ub=ub)
+        # 20241008 -- leave other parameters at default
+        best <- sol$value
+        xmin <- sol$par
+        return(list(xmin = xmin, fmin = best) )
     } else {
         stop("Argument '", method, "' has not (yet) been implemented.")
     }

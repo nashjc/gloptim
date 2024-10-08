@@ -16,9 +16,9 @@ gloptim(fn, lb, ub, x0 = NULL,
                    "direct", "crs2lm", "isres", "stogo",        # **NLoptr**
                    "cmaoptim", "cmaes", "cmaesr", "purecmaes",  # **CMA-ES**
                    "malschains", "ceimopt",                     # **CE**
-                   "smco", "soma"), # "tabusearch"              # --others--
-        rand = FALSE, type = NULL,
-        g = NULL, gr = NULL, control = list(), ...)
+                   "smco", "soma", # "tabusearch"              # --others--
+                   "ABC"), # Artificial Bee Colony
+                    control = list(), rand = FALSE, gr = NULL,  ...)
 }
 
 \arguments{
@@ -32,9 +32,6 @@ gloptim(fn, lb, ub, x0 = NULL,
                 for the current options see the \bold{Details} below.}
   \item{rand}{logical; shall the initial point be randomized; defaults to FALSE,
               that is the initial point be the midpoint of the bounding box.}
-  \item{type}{A characterization of the function -- not used at the moment.}
-  \item{g}{An additional function that specifies the feasible region,
-           x is feasible if \code{g(x) >= 0} -- not used at the moment.}
   \item{gr}{Gradient of the objective functions -- not used at the moment.}
   \item{control}{A list of control parameters;
        see \bold{Details} for more information.}

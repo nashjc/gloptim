@@ -11,7 +11,7 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
           "direct", "crs2lm", "isres", "stogo",         # **NLoptr**
           "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # **CMA-ES**
           "malschains", "ceimopt",                      # **CE**
-          "smco", "soma")                               # --others--
+          "smco", "soma", "ABC")                        # --others--
 
     cat("glopt: control="); print(control)
 
@@ -27,6 +27,7 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
     colnames(dfpar)<-cnam
     mthd <- c(); fminimum <- c(); thetime <- c();
     for (m in incl) {
+        cat("Method:",m,"\n")
         im <- which(incl == m)
         tm <- system.time(
             sol <- gloptim(fn, lb, ub, x0 = x0, method=m, gr=gr, 
