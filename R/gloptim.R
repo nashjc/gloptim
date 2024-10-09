@@ -137,6 +137,8 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
         # changed min to lower, max to upper (deprecated form replaced)
         gafmin<-as.numeric(gasol@fitnessValue)
         gaxmin<-gasol@solution
+        if (dim(gaxmin)[1] > 1) gaxmin <- gaxmin[1,] # Use first only if multiple
+        # 20241008 issue with multiple minima at same fn value
         ## gasol is ga-class object. (expletives deleted!!)
         return(list(xmin = gaxmin, fmin = s * gafmin))
     } else if (method == "genoud") {

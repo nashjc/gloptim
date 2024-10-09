@@ -7,7 +7,7 @@ Depends: R (>= 2.11.1)
 Imports: stats, DEoptim, DEoptimR, RcppDE, NMOF, adagio, GA, GenSA,
         pso, hydroPSO, RCEIM, nloptr, rCMA, parma, rgenoud,
         Rmalschains, smoof, ParamHelpers, cmaesr, soma, smco,
-        ABCoptim
+        ABCoptim, devtools
 Suggests: knitr, optimx, reportr, gaoptim
 Version: 2024.10-8
 Author: John C. Nash and Hans W. Borchers
