@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: pdf_document
 bibliography: nlpd.bib
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{gloptim stochastic optimization wrapper}
   %\VignetteEngine{knitr::rmarkdown}
   %\usepackage[utf8]{inputenc}
 Abstract:

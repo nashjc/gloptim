@@ -20,7 +20,10 @@ export(fnTrefethen,
 	   fnRana
 )
 
+import(rJava)
+
 importFrom(stats, runif)
+importFrom("utils", "askYesNo", "install.packages")
 
 # importFrom(DEoptim, DEoptim,DEoptim.control)
 # importFrom(RcppDE, DEoptim,DEoptim.control)

@@ -1,32 +1,39 @@
 NEWS for gloptim package
 
-2024.05-01  o  use fn1 to allow dot-args in glopt()
-            o  remove section on match.fun() as it does not seem necessary
-            o  had to de-archive gaoptim, hydroPSO  smco
-            o  removed argument g from glopt() and gloptim(). Previously had
+Changes in version 2024.05-01
+            *  use fn1 to allow dot-args in glopt()
+            *  remove section on match.fun() as it does not seem necessary
+            *  had to de-archive gaoptim, hydroPSO  smco
+            *  removed argument g from glopt() and gloptim(). Previously had
                "\item{g}{An additional function that specifies the feasible region,
                x is feasible if \code{g(x) >= 0} -- not used at the moment.}"
-            o  removed argument rand from glopt() but NOT from gloptim(), where
+            *  removed argument rand from glopt() but NOT from gloptim(), where
                it defaults to FALSE. That is, we can "randomize" around a starting
                set of parameters in gloptim(), but glopt() always uses lower and
                upper bounds.
-            o  In gloptim(), removed "minimize". This may be relevant for "ga" 
+            *  In gloptim(), removed "minimize". This may be relevant for "ga" 
 	       method, in that we now ONLY minimize with this package. (We may
 	       wish to revisit this later.) 
 
-2017.01-30  o  minor fixes to satisfy R CMD check
+Changes in version 2017.01-30  
+            *  minor fixes to satisfy R CMD check
 
-2017.01-30  o  glopt() calls all available global solvers in sequence.
-            o  Method names can now be included and excluded.
+Changes in version 2017.01-30  
+            *  glopt() calls all available global solvers in sequence.
+            *  Method names can now be included and excluded.
 
-2017.01-28  o  Added 15 more stochastic/global solvers.
-            o  Added 12 test functions and suggests globalOptTests.
+Changes in version 2017.01-28
+            *  Added 15 more stochastic/global solvers.
+            *  Added 12 test functions and suggests globalOptTests.
 
-2017.01-24  o  Added DEoptimR::JDEoptim adagio::simpleDE.
-            o  Changed the Hald test to a test for all solvers.
+Changes in version 2017.01-24
+            *  Added DEoptimR::JDEoptim adagio::simpleDE.
+            *  Changed the Hald test to a test for all solvers.
 
-2017.01-23  o  Added smco and soma.
+Changes in version 2017.01-23
+            *  Added smco and soma.
 
-2017.01-21  o  Set up package using code from HWB gloptim.html document. 
-            o  Usage in .Rd file had <- function() which HWB removed.
+Changes in version 2017.01-21
+            *  Set up package using code from HWB gloptim.html document. 
+            *  Usage in .Rd file had <- function() which HWB removed.
            

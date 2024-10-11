@@ -58,7 +58,8 @@ glopt(fn, lb, ub, x0 = NULL, gr = NULL, incl = NULL,
 \examples{
 ##  See the tests directory and the vignettes.
 
-glopt(fnRastrigin, c(-1, -1), c(1, 1))
+# Note exclusions to reduce computation time to < 5s for CRAN
+glopt(fnRastrigin, c(-1, -1), c(1, 1), excl=c("hydropso", "cmaoptim"))
 ##         method         fmin  time
 ##  1     deoptim 0.000000e+00 0.059
 ##  2  cppdeoptim 0.000000e+00 0.053
