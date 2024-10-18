@@ -10,7 +10,7 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
                    "direct", "crs2lm", "isres", "stogo", 
                    "cmaoptim", "cmaes", "cmaesr", "purecmaes",
                    "malschains", "ceimopt", "smco", "soma",
-                   "ABC"), 
+                   "ABC", "genalg"), 
                    control=list(), 
                    rand = FALSE, gr = NULL, ...) {
 ##        method = c("deoptim", "cppdeoptim", "deoptimr",         # **DE**
@@ -298,6 +298,14 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
         # 20241008 -- leave other parameters at default
         best <- sol$value
         xmin <- sol$par
+        return(list(xmin = xmin, fmin = best) )
+    } else if (method == "genalg") {
+	sol <- genalg::rbga(lb, ub, popSize=200, iters=100,  # elitism=1,
+           evalFunc=fn1)
+        # 20241008 -- leave other parameters at default
+        m = which.min(sol$evaluations)
+        best = sol$population[m,]
+        xmin = sol$evaluations[m] 
         return(list(xmin = xmin, fmin = best) )
     } else {
         stop("Argument '", method, "' has not (yet) been implemented.")
