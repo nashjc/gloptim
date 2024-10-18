@@ -11,7 +11,7 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
           "direct", "crs2lm", "isres", "stogo",         # **NLoptr**
           "cmaoptim", "cmaes", "cmaesr", "purecmaes",   # **CMA-ES**
           "malschains", "ceimopt",                      # **CE**
-          "smco", "soma", "ABC")                        # --others--
+          "smco", "soma", "ABC", "genalg")              # --others--
 
     cat("glopt: control="); print(control)
 
@@ -33,7 +33,8 @@ glopt <- function(fn, lb, ub, x0 = NULL, gr = NULL,
             sol <- gloptim(fn, lb, ub, x0 = x0, method=m, gr=gr, 
                    rand=FALSE, control, ...)
         )
-        mthd <- c(mthd, m); fminimum <- c(fminimum, sol$fmin)
+        mthd <- c(mthd, m)
+        fminimum <- c(fminimum, sol$fmin)
         thetime <- c(thetime, unname(tm["elapsed"]))
         dfpar[im, ] <- sol$xmin
     }

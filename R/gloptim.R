@@ -304,8 +304,8 @@ gloptim <- function(fn, lb, ub, x0 = NULL,
            evalFunc=fn1)
         # 20241008 -- leave other parameters at default
         m = which.min(sol$evaluations)
-        best = sol$population[m,]
-        xmin = sol$evaluations[m] 
+        xmin = sol$population[m,]
+        best = sol$evaluations[m] 
         return(list(xmin = xmin, fmin = best) )
     } else {
         stop("Argument '", method, "' has not (yet) been implemented.")

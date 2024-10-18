@@ -1,5 +1,12 @@
 NEWS for gloptim package
 
+Issues:
+            *  Some methods MAY(??) be writing data to storage during execution.
+               This has not been diagnosed at time of packaging.
+
+Changes in version 2024.10-20
+            *  Added solvers ABCoptim, genalg::rbga
+
 Changes in version 2024.05-01
             *  use fn1 to allow dot-args in glopt()
             *  remove section on match.fun() as it does not seem necessary

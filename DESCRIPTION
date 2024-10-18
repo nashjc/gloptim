@@ -9,8 +9,8 @@ Suggests: knitr, optimx, reportr, gaoptim, DEoptim, DEoptimR,
         RcppDE, NMOF, adagio, GA, GenSA,
         pso, hydroPSO, RCEIM, nloptr, rCMA, parma, rgenoud,
         Rmalschains, smoof, ParamHelpers, cmaesr, soma, smco,
-        ABCoptim
-Version: 2024.10-11
+        ABCoptim, genalg
+Version: 2024.10-20
 Author: John C. Nash and Hans W. Borchers
 VignetteBuilder: knitr
 Maintainer: John C. Nash <nashjc@uottawa.ca>

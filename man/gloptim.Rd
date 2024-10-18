@@ -16,8 +16,8 @@ gloptim(fn, lb, ub, x0 = NULL,
                    "direct", "crs2lm", "isres", "stogo",        # **NLoptr**
                    "cmaoptim", "cmaes", "cmaesr", "purecmaes",  # **CMA-ES**
                    "malschains", "ceimopt",                     # **CE**
-                   "smco", "soma", # "tabusearch"              # --others--
-                   "ABC"), # Artificial Bee Colony
+                   "smco", "soma", # "tabusearch"??              # --others--
+                   "ABC", "genalg"), # Artificial Bee Colony   # ABC, genalg
                     control = list(), rand = FALSE, gr = NULL,  ...)
 }
 
